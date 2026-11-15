@@ -46,6 +46,18 @@ const patientSchema = new mongoose.Schema({
       frequency: String
     }
   ],
+  visits: [
+  {
+    visitDate: {
+      type: Date,
+      default: Date.now
+    },
+    department: String,
+    diagnosis: String,
+    doctorName: String,
+    notes: String
+  }
+],
 
   doctorNotes: [String]
 
