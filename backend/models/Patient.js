@@ -63,4 +63,24 @@ const patientSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model("Patient", patientSchema);
+// Indexes for search optimization
+patientSchema.index({ patientId: 1 }, { unique: true });
+
+patientSchema.index({ name: 1 });
+
+patientSchema.index({
+  "medicalHistory.condition": 1
+});
+
+patientSchema.index({
+  "visits.visitDate": -1
+});
+
+patientSchema.index({
+  "medicalHistory.condition": 1,
+  "visits.visitDate": -1
+});
+
+const Patient = mongoose.model("Patient", patientSchema);
+
+module.exports = Patient;
