@@ -64,7 +64,7 @@ const patientSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Indexes for search optimization
-patientSchema.index({ patientId: 1 }, { unique: true });
+// 
 
 patientSchema.index({ name: 1 });
 
