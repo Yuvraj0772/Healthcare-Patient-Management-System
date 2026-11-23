@@ -1,5 +1,6 @@
 const Staff = require("../models/Staff");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 // Register Staff
 const registerStaff = async (req, res) => {
@@ -60,4 +61,86 @@ const registerStaff = async (req, res) => {
   }
 };
 
-module.exports = { registerStaff };
+// Login Staff
+const loginStaff = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    // Find staff by email
+    const staff = await Staff.findOne({
+      email: email.trim().toLowerCase(),
+    });
+
+    console.log("Staff found:", !!staff);
+
+    if (!staff) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    // Compare password with hashed password
+    const isPasswordMatch = await bcrypt.compare(
+      password,
+      staff.password
+    );
+
+    console.log("Password match:", isPasswordMatch);
+
+    if (!isPasswordMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      {
+        id: staff._id,
+        role: staff.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    // Send response
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      staff: {
+        id: staff._id,
+        name: staff.name,
+        email: staff.email,
+        role: staff.role,
+      },
+    });
+
+  } catch (error) {
+  console.error("Login Error:", error);
+
+  res.status(500).json({
+    success: false,
+    message: "Login failed",
+  });
+}
+
+  // } catch (error) {
+  //   res.status(500).json({
+  //     success: false,
+  //     message: "Login failed",
+  //   });
+  // }
+};
+
+module.exports = { registerStaff, loginStaff };

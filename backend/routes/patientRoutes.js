@@ -1,13 +1,18 @@
 const express = require("express");
 
 const {
-  addPatient,
-  getPatients,
-  getPatientById,
-  searchPatients,
-  updatePatient,
-  deletePatient
-} = require("../controllers/patientController");
+  protect,
+  authorizeRoles,
+} = require("../middleware/authMiddleware");
+
+router.get("/search", protect, searchPatients);
+router.post("/", protect, addPatient);
+router.get("/", protect, getPatients);
+router.patch("/:id", protect, updatePatient);
+router.delete("/:id", protect, authorizeRoles("admin"), deletePatient);
+router.get("/:id", protect, getPatientById); 
+
+
 
 const router = express.Router();
 
