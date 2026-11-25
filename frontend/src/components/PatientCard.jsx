@@ -1,4 +1,4 @@
-function PatientCard({ patient }) {
+function PatientCard({ patient, onViewDetails }) {
   return (
     <div className="patient-card">
       <div className="patient-card-header">
@@ -7,11 +7,14 @@ function PatientCard({ patient }) {
       </div>
 
       <div className="patient-card-details">
-        <p><strong>Age:</strong> {patient.age}</p>
-        <p><strong>Gender:</strong> {patient.gender}</p>
+        <p>Age: {patient.age}</p>
+        <p>Gender: {patient.gender}</p>
       </div>
 
-      <button className="view-patient-btn">
+      <button
+        className="view-patient-btn"
+        onClick={() => onViewDetails(patient)}
+      >
         View Details
       </button>
     </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchPatients } from "../services/api";
 import PatientCard from "../components/PatientCard";
 
-function Dashboard() {
+function Dashboard({ onAddPatient, onViewDetails }) {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -30,9 +30,12 @@ function Dashboard() {
           <p>Manage and monitor patient records</p>
         </div>
 
-        <button className="add-patient-btn">
-          + Add Patient
-        </button>
+        <button
+  className="add-patient-btn"
+  onClick={onAddPatient}
+>
+  + Add Patient
+</button>
       </div>
 
       <div className="dashboard-stats">
@@ -70,12 +73,13 @@ function Dashboard() {
 
         {!loading && !error && patients.length > 0 && (
           <div className="patient-grid">
-            {patients.slice(0, 6).map((patient) => (
-              <PatientCard
-                key={patient._id}
-                patient={patient}
-              />
-            ))}
+           {patients.slice(0, 6).map((patient) => (
+  <PatientCard
+    key={patient._id}
+    patient={patient}
+    onViewDetails={onViewDetails}
+  />
+))}
           </div>
         )}
       </div>

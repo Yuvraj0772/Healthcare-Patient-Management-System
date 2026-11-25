@@ -76,10 +76,10 @@ patientSchema.index({
   "visits.visitDate": -1
 });
 
-patientSchema.index({
-  "medicalHistory.condition": 1,
-  "visits.visitDate": -1
-});
+// patientSchema.index({
+//   "medicalHistory.condition": 1,
+//   "visits.visitDate": -1
+// });
 
 const Patient = mongoose.model("Patient", patientSchema);
 
