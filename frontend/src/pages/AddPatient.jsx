@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { addPatient } from "../services/api";
 
@@ -7,9 +8,7 @@ function AddPatient({ onPatientAdded, onCancel }) {
     name: "",
     age: "",
     gender: "",
-    contact: {
-      phone: "",
-    },
+    contact: { phone: "" },
     allergies: "",
     medicalHistory: "",
   });
@@ -23,10 +22,7 @@ function AddPatient({ onPatientAdded, onCancel }) {
     if (name === "phone") {
       setFormData((prev) => ({
         ...prev,
-        contact: {
-          ...prev.contact,
-          phone: value,
-        },
+        contact: { ...prev.contact, phone: value },
       }));
     } else {
       setFormData((prev) => ({
@@ -48,11 +44,7 @@ function AddPatient({ onPatientAdded, onCancel }) {
         ? formData.allergies.split(",").map((item) => item.trim())
         : [],
       medicalHistory: formData.medicalHistory
-        ? [
-            {
-              condition: formData.medicalHistory.trim(),
-            },
-          ]
+        ? [{ condition: formData.medicalHistory.trim() }]
         : [],
     };
 
@@ -68,105 +60,150 @@ function AddPatient({ onPatientAdded, onCancel }) {
 
   return (
     <div className="add-patient-page">
+
+      <button className="form-back-btn" type="button" onClick={onCancel}>
+        <span>←</span> Back to Dashboard
+      </button>
+
       <div className="add-patient-header">
-        <h1>Add New Patient</h1>
-        <p>Enter patient details below</p>
+        <div>
+          <span className="dashboard-eyebrow">PATIENT MANAGEMENT</span>
+          <h1>Add New Patient</h1>
+          <p>Enter patient information to create a medical record.</p>
+        </div>
       </div>
 
       <form className="add-patient-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Patient ID</label>
-          <input
-            name="patientId"
-            value={formData.patientId}
-            onChange={handleChange}
-            placeholder="e.g. PAT001"
-            required
-          />
+
+        {/* Basic Information */}
+        <div className="form-section">
+          <div className="form-section-heading">
+            <div className="form-section-icon">♙</div>
+            <div>
+              <h2>Personal Information</h2>
+              <p>Basic details and contact information</p>
+            </div>
+          </div>
+
+          <div className="form-fields-grid">
+            <div className="form-group">
+              <label>Patient ID <span>*</span></label>
+              <input
+                name="patientId"
+                value={formData.patientId}
+                onChange={handleChange}
+                placeholder="e.g. PAT001"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Full Name <span>*</span></label>
+              <input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Enter full name"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Age <span>*</span></label>
+              <input
+                type="number"
+                name="age"
+                value={formData.age}
+                onChange={handleChange}
+                placeholder="Enter age"
+                min="0"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Gender <span>*</span></label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Phone Number</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.contact.phone}
+                onChange={handleChange}
+                placeholder="Enter phone number"
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="form-group">
-          <label>Full Name</label>
-          <input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Patient full name"
-            required
-          />
-        </div>
+        {/* Medical Information */}
+        <div className="form-section">
+          <div className="form-section-heading">
+            <div className="form-section-icon">✚</div>
+            <div>
+              <h2>Medical Information</h2>
+              <p>Allergies and medical history</p>
+            </div>
+          </div>
 
-        <div className="form-group">
-          <label>Age</label>
-          <input
-            type="number"
-            name="age"
-            value={formData.age}
-            onChange={handleChange}
-            placeholder="Age"
-            min="0"
-            required
-          />
-        </div>
+          <div className="form-fields-grid">
 
-        <div className="form-group">
-          <label>Gender</label>
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
+            <div className="form-group full-width">
+              <label>Known Allergies</label>
+              <input
+                name="allergies"
+                value={formData.allergies}
+                onChange={handleChange}
+                placeholder="e.g. Dust, Penicillin (comma separated)"
+              />
+              <small>Separate multiple allergies using commas.</small>
+            </div>
 
-        <div className="form-group">
-          <label>Phone Number</label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.contact.phone}
-            onChange={handleChange}
-            placeholder="Phone number"
-          />
-        </div>
+            <div className="form-group full-width">
+              <label>Medical History / Condition</label>
+              <textarea
+                name="medicalHistory"
+                value={formData.medicalHistory}
+                onChange={handleChange}
+                placeholder="Describe existing conditions, medical history or diagnosis..."
+                rows="5"
+              />
+            </div>
 
-        <div className="form-group">
-          <label>Allergies</label>
-          <input
-            name="allergies"
-            value={formData.allergies}
-            onChange={handleChange}
-            placeholder="e.g. Dust, Penicillin (comma separated)"
-          />
-        </div>
-
-        <div className="form-group full-width">
-          <label>Medical History / Condition</label>
-          <textarea
-            name="medicalHistory"
-            value={formData.medicalHistory}
-            onChange={handleChange}
-            placeholder="Enter medical condition"
-            rows="4"
-          />
+          </div>
         </div>
 
         {error && <p className="form-error">{error}</p>}
 
+        {/* Actions */}
         <div className="form-actions">
-          <button type="button" className="cancel-btn" onClick={onCancel}>
+          <button
+            type="button"
+            className="cancel-btn"
+            onClick={onCancel}
+            disabled={loading}
+          >
             Cancel
           </button>
 
           <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? "Saving..." : "Save Patient"}
+            {loading ? "Saving Patient..." : "＋ Save Patient"}
           </button>
         </div>
+
       </form>
     </div>
   );
