@@ -172,7 +172,14 @@ const updatePatient = async (req, res) => {
     const update = {};
 
     // Update existing fields
-    const allowedFields = ["name", "age", "gender", "contact"];
+    const allowedFields = [
+  "name",
+  "age",
+  "gender",
+  "contact",
+  "allergies",
+  "medicalHistory"
+];
 
     if (set) {
       const safeFields = {};

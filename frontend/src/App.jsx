@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
@@ -5,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import AddPatient from "./pages/AddPatient";
 import PatientDetails from "./pages/PatientDetails";
+import EditPatient from "./pages/EditPatient";
 import "./App.css";
 
 function App() {
@@ -31,6 +33,15 @@ function App() {
   const handleViewDetails = (patient) => {
     setSelectedPatient(patient);
     setPage("details");
+  };
+
+  const handleEditPatient = () => {
+    setPage("editPatient");
+  };
+
+  const handlePatientUpdated = () => {
+    setSelectedPatient(null);
+    setPage("dashboard");
   };
 
   return !token ? (
@@ -61,6 +72,15 @@ function App() {
             <PatientDetails
               patient={selectedPatient}
               onBack={() => setPage("dashboard")}
+              onEdit={handleEditPatient}
+            />
+          )}
+
+          {page === "editPatient" && (
+            <EditPatient
+              patient={selectedPatient}
+              onCancel={() => setPage("details")}
+              onPatientUpdated={handlePatientUpdated}
             />
           )}
 
@@ -74,3 +94,4 @@ function App() {
 }
 
 export default App;
+

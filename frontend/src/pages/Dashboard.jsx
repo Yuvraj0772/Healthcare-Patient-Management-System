@@ -7,6 +7,7 @@ function Dashboard({ onAddPatient, onViewDetails }) {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const loadPatients = async () => {
@@ -23,9 +24,35 @@ function Dashboard({ onAddPatient, onViewDetails }) {
     loadPatients();
   }, []);
 
+  // Filter patients based on search
+  const filteredPatients = patients.filter((patient) => {
+    const search = searchTerm.toLowerCase().trim();
+
+    if (!search) return true;
+
+    const name = patient.name?.toLowerCase() || "";
+    const patientId = patient.patientId?.toLowerCase() || "";
+
+    const conditions =
+      patient.medicalHistory
+        ?.map((item) => item.condition?.toLowerCase() || "")
+        .join(" ") || "";
+
+    const diagnoses =
+      patient.visits
+        ?.map((visit) => visit.diagnosis?.toLowerCase() || "")
+        .join(" ") || "";
+
+    return (
+      name.includes(search) ||
+      patientId.includes(search) ||
+      conditions.includes(search) ||
+      diagnoses.includes(search)
+    );
+  });
+
   return (
     <div className="dashboard">
-
       {/* Dashboard Welcome Section */}
       <div className="dashboard-header">
         <div className="dashboard-welcome">
@@ -41,7 +68,6 @@ function Dashboard({ onAddPatient, onViewDetails }) {
 
       {/* Statistics */}
       <div className="dashboard-stats">
-
         <div className="stat-card">
           <div className="stat-card-top">
             <span className="stat-icon">♙</span>
@@ -77,12 +103,10 @@ function Dashboard({ onAddPatient, onViewDetails }) {
           <h2>--</h2>
           <p className="stat-description">Active healthcare staff</p>
         </div>
-
       </div>
 
       {/* Recent Patients */}
       <div className="patient-section">
-
         <div className="patient-section-header">
           <div>
             <span className="dashboard-eyebrow">PATIENT DIRECTORY</span>
@@ -91,28 +115,54 @@ function Dashboard({ onAddPatient, onViewDetails }) {
           </div>
 
           <span className="patient-count">
-            {patients.length} Records
+            {filteredPatients.length} Records
           </span>
         </div>
 
-        {loading && <p className="dashboard-message">Loading patients...</p>}
+        {/* Search Bar */}
+        <div className="patient-search-container">
+          <span className="patient-search-icon">⌕</span>
+
+          <input
+            type="text"
+            placeholder="Search by name, Patient ID or condition..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          {searchTerm && (
+            <button
+              className="clear-search-btn"
+              onClick={() => setSearchTerm("")}
+            >
+              ×
+            </button>
+          )}
+        </div>
+
+        {loading && (
+          <p className="dashboard-message">Loading patients...</p>
+        )}
 
         {error && <p className="error-message">{error}</p>}
 
+        {/* No patients */}
         {!loading && !error && patients.length === 0 && (
           <div className="empty-patients">
             <div className="empty-icon">♙</div>
             <h3>No patient records yet</h3>
             <p>Add your first patient to get started.</p>
+
             <button className="add-patient-btn" onClick={onAddPatient}>
               + Add Patient
             </button>
           </div>
         )}
 
-        {!loading && !error && patients.length > 0 && (
+        {/* Matching patients */}
+        {!loading && !error && filteredPatients.length > 0 && (
           <div className="patient-grid">
-            {patients.slice(0, 6).map((patient) => (
+            {filteredPatients.slice(0, 6).map((patient) => (
               <PatientCard
                 key={patient._id}
                 patient={patient}
@@ -122,9 +172,22 @@ function Dashboard({ onAddPatient, onViewDetails }) {
           </div>
         )}
 
+        {/* No search matches */}
+        {!loading &&
+          !error &&
+          patients.length > 0 &&
+          filteredPatients.length === 0 && (
+            <div className="empty-patients">
+              <h3>No matching patients found</h3>
+              <p>
+                Try searching with another name, ID or medical condition.
+              </p>
+            </div>
+          )}
       </div>
     </div>
   );
 }
 
 export default Dashboard;
+

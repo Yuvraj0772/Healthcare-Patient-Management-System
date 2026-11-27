@@ -39,4 +39,27 @@ export const addPatient = async (patientData) => {
   return data;
 };
 
+
+export const updatePatient = async (id, patientData) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/patients/${id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(patientData),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to update patient");
+  }
+
+  return data;
+};
+
+
 export default API_URL;
